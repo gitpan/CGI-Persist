@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST
+Makefile.PL
+README
+Todo
+lib/CGI/Persist.pm
+lib/CGI/Persist/DBI.pm
+lib/CGI/Persist/File.pm
+t/01_persist.t
+t/02_request.t
+t/03_delete-self.t
+
