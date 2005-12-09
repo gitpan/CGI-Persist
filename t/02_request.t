@@ -1,4 +1,4 @@
-use Test::More tests => 13;
+use Test::More tests => 15;
 
 use strict;
 
@@ -25,6 +25,18 @@ ok($p->data("key") eq "0294202049522095", "data setting - OK");
 #STORE ID
 # read a parameter from the data.
 my $id = $p->ID;
+
+# store a multi-value parameter
+undef $p;
+FakeRequest("ID" => $id, q => 1, hoi => 1, hoi => 2, hoi => 3 );
+$p = CreateCGI();
+is(join(", ", ( $p->currentParam("hoi"))), "1, 2, 3", "Value array currentParam");
+
+undef $p;
+FakeRequest("ID" => $id);
+$p = CreateCGI();
+is(join(", ", ( $p->param("hoi"))), "1, 2, 3", "Value array param");
+
 
 undef $p;
 FakeRequest("ID" => $id, q => 1);

@@ -1,7 +1,7 @@
 package CGI::Persist;
 
 BEGIN {
-  $CGI::Persist::VERSION = 2.1;
+  $CGI::Persist::VERSION = 2.2;
   $CGI::Persist::TEST    = 0;
 }
 
@@ -25,7 +25,7 @@ our %obj_;
 use Class::AccessorMaker::Private {
   # General object attribute
   ID => "",
-  sessionTime => DEF_EXP_TIME,  
+  sessionTime => DEF_EXP_TIME,
   no_init => 0,
   logFile      => "",
   errorLogFile => "",
@@ -163,7 +163,7 @@ sub serialize {
     $unfrozen->{timestamp} = $self->timestamp;
 
     foreach my $par ( $self->param ) {
-      $unfrozen->{param}->{$par} = $self->param($par)
+      $unfrozen->{param}->{$par} = [ $self->param($par) ];
     }
   }
 
@@ -572,6 +572,10 @@ And make sure that these routines do what their names promisse.
 =head1 KNOWN BUGS
 
 None so far.
+
+=head1 CHANGELOG
+
+20051209: Discoverd that value arrays are not stored correctly, Fixed.
 
 =head1 THANKS TO
 
