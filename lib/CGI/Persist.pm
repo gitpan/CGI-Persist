@@ -48,7 +48,7 @@ use Class::AccessorMaker::Private {
 sub new {
   my $class = ref($_[0]) || $_[0]; shift;
 
-  if ( "$#_" !~ /[13579]$/ ) {
+  if ( $#_ > 0 && "$#_" !~ /[13579]$/ ) {
     die("Not a hash-like set of parameters for Persist::new()\n");
   }
 
@@ -116,7 +116,7 @@ sub init {
 
   # run the run.
   &{$self->run()} if defined $self->run;
-  
+
   return $self;
 }
 
@@ -257,12 +257,12 @@ sub got_submit {
 sub currentParam {
   my ($self, $param) = splice(@_,0,2);
 
-  if ($#_ > 0 ) {
+  if ( $#_ > 0 ) {
     croak("currentParam doesn't support 'set'")
   } elsif ( ! defined($param) ) {
     return(keys %{$obj_{$self}->{currentparam}});
   }
-  
+
   my $array = $obj_{$self}->{currentparam}->{$param};
   if ( $array ) {
     return wantarray ? @{$array} : $array->[0]
@@ -314,7 +314,7 @@ sub filterSessionData {
 
   { # remove all parameters not masked by $self->mask;
     my $regex = join("|", @objectMask);
-    if ( $regex  and $regex !~ /^\|+$/ ) {
+    if ( $regex && $regex !~ /^\|+$/ ) {
       $regex =~ s/\*/\.\*/;
       push @mask, (grep { !/^$regex$/ } @list);
     }
@@ -323,7 +323,7 @@ sub filterSessionData {
 
   { # remove all parameters filtered by $self->filter
     my $regex = join("|", @objectFilter);
-    if ( $regex and $regex !~ /^\|+$/ ) {
+    if ( $regex && $regex !~ /^\|+$/ ) {
       $regex =~ s/\*/\.\*/g;
       push @filter, (grep { /^$regex$/ } @list);
     }
@@ -356,10 +356,12 @@ sub log {
   return undef if !$file;
   $msg .= "\n" if $msg !~ /\n$/m;
 
+  my $ID = $self->ID || "no-ID";
+
   if ( open(LOG, ">>$file") ){
     flock(LOG, LOCK_EX);
     seek(LOG, 0, 2);
-    print LOG time . "\t" . $self->ID . "\t" . $msg;
+    print LOG join("\t", time, $ID, $msg);
     flock(LOG, LOCK_UN);
     close(LOG);
   } else {
@@ -399,7 +401,7 @@ sub href {
   my ($self, $link, $text) = @_;
   my $sig;
 
- if ( $link =~ /\?/ ) {
+ if ( $link && $link =~ /\?/ ) {
     $sig = "&";
   } else {
     $sig = "?";
@@ -445,7 +447,7 @@ sub elementOf {
 
   my @indices;
   for(0..$#{$array}) {
-    if ( $item eq $array->[$_]) {
+    if ( $item && $item eq $array->[$_]) {
       push @indices, $_;
     }
   }
@@ -575,7 +577,9 @@ None so far.
 
 =head1 CHANGELOG
 
-20051209: Discoverd that value arrays are not stored correctly, Fixed.
+20051209 : Discoverd that value arrays are not stored correctly, Fixed.
+20051219 : Prevented lots of warnings due to more defensive if/unless constructions
+         : Added test for DBI
 
 =head1 THANKS TO
 

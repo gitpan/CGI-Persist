@@ -82,14 +82,14 @@ sub openDB {
   ##   $self->openDB();
   ##
 
- die ("Don't you ever touch my balls without asking!\n")
+ die ("Only CGI::Persist can openDB\n")
     if !( caller =~ /Persist/ );
 
   my ($self) = @_;
 
   # formulate a filename.
   my $FN = $self->root . "/";
-  die ( "You must specify a storage root" ) if $FN eq "/";
+  die ( "You must specify a storage root" ) if ( $FN && ( $FN eq "/" ) );
   $FN .= $self->prefix . "-" if $self->prefix;
   $FN .= $self->ID;
 
@@ -148,7 +148,7 @@ sub get {
   $ID ||= $self->ID;
 
   # 'reset' DB
-  $self->closeDB if ( $self->MODE eq "w" );
+  $self->closeDB if ( $self->MODE && ( $self->MODE eq "w" ) );
   $self->MODE("r");
   $self->openDB;
 
@@ -188,7 +188,7 @@ sub store {
 
   my ($self, $create) = @_;
 
-  $self->closeDB if ( $self->MODE eq "r" );
+  $self->closeDB if ( $self->MODE && ( $self->MODE eq "r" ) );
 
   $self->MODE("w");
   $self->openDB;
@@ -228,7 +228,7 @@ sub untaint {
 
   # first check for bad sequences in filename(s).
   die "Chosen CGI::Persist::File->root(" . $self->root() . ") is not safe\n"
-    if $tainted =~ m/\.\.\//;
+    if ( $tainted && ( $tainted =~ m/\.\.\// ) );
 
   ($tainted) = $tainted =~ m/^([\w\d\_\-\.\/]+)/;
   return $tainted;
@@ -261,13 +261,13 @@ sub findOldSessions {
   opendir($DIR, $self->root);
 
   while(my $read = readdir($DIR)) {
-    next if ( $read =~ /^\.+$/ || !$read );
+    next if ( !$read || $read =~ /^\.+$/ );
 
     my (@stat) = stat $self->root . "/$read";
     if ( $prefix ) {
-      push @list, $read if ( $read =~ /^$prefix/ && $stat[9] < $old );
+      push @list, $read if ( $read =~ /^$prefix/ && ( $stat[9] < $old ) );
     } elsif ( length($read) < 10 && length($read) >= 6 ) {
-      push @list, $read if ( $stat[9] < $old );
+      push @list, $read if ( $stat[9] && ( $stat[9] < $old ) );
     }
   }
   closedir($DIR);
@@ -339,8 +339,9 @@ on the other end of the line.
     $id = $p->param('id') || $p->ID;
 
     # store something completely else
-    $p->data(MyName => "Hartog C. de Mik",
-	     key => "0294202049522095");
+    $p->data( MyName => "Hartog C. de Mik",
+	      key => "0294202049522095",
+            );
 
 =head1 METHODS
 

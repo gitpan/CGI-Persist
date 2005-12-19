@@ -1,5 +1,8 @@
 use Test::More tests => 5;
 
+# first make a tmp dir.
+mkdir("tmp", 0775);
+
 # dependencies
 use_ok("Storable");
 use Class::AccessorMaker { bla => '' }, 'no_new';

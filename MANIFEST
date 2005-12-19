@@ -9,4 +9,4 @@ lib/CGI/Persist/File.pm
 t/01_persist.t
 t/02_request.t
 t/03_delete-self.t
-
+t/04_dbi.t

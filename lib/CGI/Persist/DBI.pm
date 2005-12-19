@@ -24,7 +24,7 @@ sub openDB {
 
   return if $self->dbh || $self->{".dbOpen"};
 
-  unless ( exists $INC{"DBI.pm"} ) { use DBI; }
+  unless ( exists $INC{"DBI.pm"} ) { eval "use DBI;"; }
 
   my $dsn = "DBI:" . $self->driver . ":database=" . $self->db . ";";
   $dsn .= "host=" . $self->host . ";" if $self->host;
