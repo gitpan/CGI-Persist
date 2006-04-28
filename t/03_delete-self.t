@@ -19,7 +19,8 @@ $p->newSession;
 
 ok($pid ne $p->ID, "new ID");
 
-ok($p->clean($p->prefix . "-" . $pid) == -1, "cleaned self");
+my $count = $p->clean($p->prefix . "-" . $pid);
+ok($count <= 0, "cleaned self");
 
 exit;
 

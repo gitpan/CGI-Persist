@@ -204,6 +204,7 @@ sub deserialize {
   # find out envirnoment parameters
   foreach my $p ( $self->SUPER::param() ) {
     my @val = $self->SUPER::param($p);
+    print STDERR "Setting $self CP $p to [ " . join(", ", @val) . " ]\n";
     $obj_{$self}->{currentparam}->{$p} = [ @val ];
   }
 

@@ -6,7 +6,10 @@ Todo
 lib/CGI/Persist.pm
 lib/CGI/Persist/DBI.pm
 lib/CGI/Persist/File.pm
+lib/CGI/Persist/Cache.pm
+lib/CGI/Persist/Cookie.pm
 t/01_persist.t
 t/02_request.t
 t/03_delete-self.t
 t/04_dbi.t
+t/05_cache.t

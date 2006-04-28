@@ -75,10 +75,11 @@ exit;
 sub FakeRequest{
   my @all = @_;
   my ($key, $val);
-  my $str;
+  my $str = "";
   while (($key, $val, @all ) =  @all ){
     $str .= "&$key=$val";
   }
+
   $ENV{QUERY_STRING}="$str";
   $ENV{HTTP_USER_AGENT}='shell';
   $ENV{REMOTE_ADDR}='127.0.0.1';
