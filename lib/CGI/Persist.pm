@@ -1,7 +1,7 @@
 package CGI::Persist;
 
 BEGIN {
-  $CGI::Persist::VERSION = 2.2;
+  $CGI::Persist::VERSION = 2.41;
   $CGI::Persist::TEST    = 0;
 }
 

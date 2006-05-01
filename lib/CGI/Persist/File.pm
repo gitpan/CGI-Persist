@@ -1,7 +1,7 @@
 package CGI::Persist::File;
 
 BEGIN {
-  $CGI::Persist::File::VERSION = '2.1';
+  $CGI::Persist::File::VERSION = '2.41';
 }
 
 ## The file-based frontend to CGI::Persist.
@@ -313,11 +313,13 @@ __END__
 
 =pod
 
+=head1 NAME
+
+CGI::Persist::File - file-based front end to CGI::Persist
+
 =head1 DESCRIPTION
 
 Persistency module using CGI::Persist.
-
-CGI::Persist::File is the file-based front end to CGI::Persist
 
 CGI::Persist is capable of preventing 'session-stealing'
 because it checks REMOTE_ADDR and HTTP_USER_AGENT of the guy (or gal)

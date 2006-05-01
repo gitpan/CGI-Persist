@@ -1,7 +1,7 @@
 package CGI::Persist::DBI;
 
 BEGIN {
-  $CGI::Persist::DBI::VERSION = '2.1';
+  $CGI::Persist::DBI::VERSION = '2.41';
 }
 
 # init
@@ -18,11 +18,24 @@ use Class::AccessorMaker {
   pass => "",
 }, "no_new";
 
+sub init {
+  my ( $self ) = @_;
+
+  $self->SUPER::init;
+
+  # don't forget to insert that row on the first hit.
+  if ( $self->firstRun ) {
+    $self->store( 1 );
+  }
+}
+
 # IO
 sub openDB {
   my($self) = @_;
 
-  return if $self->dbh || $self->{".dbOpen"};
+  return if ( ref($self->dbh) =~ /dbi::db/i )
+    || ( ref($self->dbh) =~ /dbd::/i )
+    || $self->{".dbOpen"};
 
   unless ( exists $INC{"DBI.pm"} ) { eval "use DBI;"; }
 
@@ -36,11 +49,17 @@ sub openDB {
 }
 
 sub get {
-  my($self) = @_;
+  my($self, $ID) = @_;
   $self->openDB;
 
-  my @row = $self->dbh->selectrow_array("SELECT session_info FROM sessions ".
-					"WHERE ID=?", {}, $self->ID);
+  $ID ||= $self->ID;
+
+  return undef if !$ID;
+
+  my @row = $self->dbh->selectrow_array( "SELECT session_info FROM sessions ".
+					 "WHERE ID=?", {}, $self->ID
+				       );
+
   $self->deserialize($row[0]);
 
   $self->{".dbOpen"} = 1 if ( $self->dbh );
@@ -64,6 +83,8 @@ sub store {
     $self->dbh->do("UPDATE sessions SET session_info=?, timestamp=? ".
 		   "WHERE ID=?", {}, $self->serialize, $timestamp, $self->ID)
   }
+
+  $self->cleanUp;
   return 1
 }
 
@@ -84,6 +105,9 @@ sub clean {
   foreach my $id (@ids) {
     $self->dbh()->do("DELETE FROM sessions WHERE ID=?",{},$id);
   }
+
+  @ids && $self->log("Cleaned " . join(", ", @ids));
+
   return 1
 }
 

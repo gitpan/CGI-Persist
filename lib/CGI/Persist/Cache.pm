@@ -5,7 +5,7 @@
 package CGI::Persist::Cache;
 
 BEGIN {
-  $CGI::Persist::Cache::VERSION = '0.1';
+  $CGI::Persist::Cache::VERSION = '2.41';
 }
 
 use strict;
@@ -137,7 +137,7 @@ __END__
 
 =head1 NAME
 
-CGI::Persist::Cache
+CGI::Persist::Cache - CGI::Persist using Cache::File
 
 =head1 DESCRIPTION
 

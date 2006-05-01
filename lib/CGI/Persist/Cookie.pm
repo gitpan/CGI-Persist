@@ -5,7 +5,7 @@
 package CGI::Persist::Cookie;
 
 BEGIN {
-  $CGI::Persist::Cookie::VERSION = '0.1';
+  $CGI::Persist::Cookie::VERSION = '2.41';
 }
 
 use strict;
@@ -160,7 +160,7 @@ __END__
 
 =head1 NAME
 
-CGI::Persist::Cookie
+CGI::Persist::Cookie - Cookie based persistency with CGI::Persist
 
 =head1 DESCRIPTION
 
